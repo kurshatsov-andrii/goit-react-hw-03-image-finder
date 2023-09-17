@@ -7,7 +7,6 @@ import { Searchbar } from './Searchbar';
 import { getImg } from 'fetch/axios';
 import { ContainerStyled, ErrorMessageStyled } from './App.styled';
 import { ButtonUp } from './ButtonUp';
-import { Notify } from 'notiflix';
 
 export class App extends Component {
   state = {
@@ -20,21 +19,13 @@ export class App extends Component {
   };
 
   componentDidUpdate(_, prevState) {
-    if (prevState.searchValue !== this.state.searchValue) {
-      this.setState(
-        {
-          isLoading: true,
-          page: 1,
-          img: [],
-          error: null,
-          totalPage: 0,
-        },
-        () => this.onFirstFetch()
-      );
+    if (prevState.searchValue !== this.state.searchValue || this.state.page !== prevState.page)
+    {
+      this.onFetch();
     }
   }
 
-  onFirstFetch = () => {
+  onFetch = () => {
     getImg(this.state.searchValue, this.state.page)
       .then(data => {
         if (data.totalHits < 1) {
@@ -42,40 +33,21 @@ export class App extends Component {
             'Sorry, there are no images matching your search query. Please try again.'
           );
         }
-        this.setState({
-          img: data.hits,
+        this.setState(prevState =>({          
+          img: [...prevState.img, ...data.hits],
           totalPage: Math.ceil(data.totalHits / 12),
-        });
-        Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        }));
       })
       .catch(({ message }) => this.setState({ error: message }))
       .finally(() => this.setState({ isLoading: false }));
   };
   
-  onLoadMore = () => {
-    getImg(this.state.searchValue, this.state.page)
-      .then(data => {
-        this.setState(
-          prevState => ({
-            img: [...prevState.img, ...data.hits],
-          }),
-          this.smoothScroll(this.getNextPageHeight())
-        );
-      })
-      .catch(error => this.setState({ error: error.message }))
-      .finally(() => this.setState({ isLoading: false }));
-  };
-
   onChangePage = () => {
     this.setState(
       prevState => ({
         page: prevState.page + 1,
         isLoading: true,
-      }),
-      () => {
-        this.onLoadMore();
-      }
-    );
+       }))
   };
 
   getNextPageHeight = () => {
@@ -90,7 +62,16 @@ export class App extends Component {
   };
 
   onSubmit = value => {
-    this.setState({ searchValue: value });
+        this.setState(
+        {
+          isLoading: true,
+          page: 1,
+          img: [],
+          error: null,
+          totalPage: 0,
+          searchValue: value,
+        },
+      );
   };
 
   render() {

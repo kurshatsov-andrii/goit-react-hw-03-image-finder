@@ -3,8 +3,7 @@ import { ImageGalleryItemStyled } from './ImageGalleryItem.styled';
 
 export function ImageGalleryItem({
   itemImg: { webformatURL, tags, largeImageURL },
-  onOpenModal,
-  onShowImg,
+  onOpenModal,  
 }) {
   return (
     <ImageGalleryItemStyled onClick={() => onOpenModal(largeImageURL, tags)}>
