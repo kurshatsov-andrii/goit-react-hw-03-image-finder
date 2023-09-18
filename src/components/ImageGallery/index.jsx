@@ -3,7 +3,7 @@ import ReactModal from 'react-modal';
 import { Modal } from '../Modal';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
 import { ImageGalleryStyled } from './ImageGallery.styled';
-import { ModalStyled } from 'components/Modal/Modal.styled';
+//import { ModalStyled } from 'components/Modal/Modal.styled';
 ReactModal.setAppElement('#root');
 
 export class ImageGallery extends Component {
@@ -24,7 +24,8 @@ export class ImageGallery extends Component {
 
   render() {
     const { img } = this.props;
-    const { showModal, showImg } = this.state;
+    const { imgUrl, alt } = this.props;
+    const { showModal } = this.state;    
     return (
       <>
         <ImageGalleryStyled className="galleryWrapp">
@@ -37,14 +38,14 @@ export class ImageGallery extends Component {
               />
             ))}
         </ImageGalleryStyled>
-        <ReactModal
-          isOpen={showModal}
-          contentLabel="Modal"
-          onRequestClose={this.handleCloseModal}
-          style={ModalStyled}
-        >
-          <Modal imgData={showImg} />
-        </ReactModal>
+        {showModal && (
+          <Modal
+            imgUrl={imgUrl}
+            alt={alt}
+            hideModal={this.handleCloseModal}
+            showModal={showModal}
+          />
+        )}
       </>
     );
   }
