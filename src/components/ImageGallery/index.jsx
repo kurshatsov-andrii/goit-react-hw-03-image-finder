@@ -24,7 +24,7 @@ export class ImageGallery extends Component {
 
   render() {
     const { img } = this.props;
-    const { imgUrl, alt } = this.props;
+    const { imgUrl, alt } = this.state.showImg;
     const { showModal } = this.state;    
     return (
       <>
