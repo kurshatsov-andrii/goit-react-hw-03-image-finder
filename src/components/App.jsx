@@ -26,6 +26,9 @@ export class App extends Component {
   }
 
   onFetch = () => {
+  this.setState({
+        isLoading: true,        
+      });
     getImg(this.state.searchValue, this.state.page)
       .then(data => {
         if (data.totalHits < 1) {
@@ -45,8 +48,7 @@ export class App extends Component {
   onChangePage = () => {
     this.setState(
       prevState => ({
-        page: prevState.page + 1,
-        isLoading: true,
+        page: prevState.page + 1,     
        }))
   };
 
